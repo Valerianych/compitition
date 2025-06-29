@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase';
-import { getEmployeeByUid } from '../services/firebaseService';
+import { getEmployeeByUid, updateEmployee } from '../services/firebaseService';
 import { Employee } from '../types';
 
 interface AuthContextType {
@@ -11,6 +11,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, userData: Partial<Employee>) => Promise<void>;
   logout: () => Promise<void>;
+  updateEmployee: (employeeId: string, data: Partial<Employee>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -44,6 +45,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setEmployee(null);
   };
 
+  const updateEmployeeData = async (employeeId: string, data: Partial<Employee>) => {
+    await updateEmployee(employeeId, data);
+    // Обновляем локальное состояние
+    if (employee && employee.id === employeeId) {
+      setEmployee(prev => prev ? { ...prev, ...data } : null);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
@@ -68,7 +77,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loading,
     login,
     signup,
-    logout
+    logout,
+    updateEmployee: updateEmployeeData
   };
 
   return (

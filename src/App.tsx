@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import LoginForm from './components/Auth/LoginForm';
@@ -23,12 +23,22 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 };
 
 const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setSidebarOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
-      <Header />
+      <Header onMenuToggle={toggleSidebar} />
       <div className="flex">
-        <Sidebar />
-        <main className="flex-1 ml-64 p-8 pt-24">
+        <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
+        <main className="flex-1 lg:ml-64 p-4 sm:p-6 lg:p-8 pt-20 sm:pt-24">
           {children}
         </main>
       </div>
@@ -41,7 +51,7 @@ const AppContent: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 flex items-center justify-center p-4">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
           <p className="text-2xl text-purple-600 font-bold">Загружаем приложение... 🎉</p>
