@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Vote, Users, Clock, BarChart3, MessageCircle, ExternalLink, MapPin, DollarSign, CheckCircle, Eye, Share2 } from 'lucide-react';
+import { Vote, Users, Clock, BarChart3, ExternalLink, MapPin, DollarSign, CheckCircle, Eye, Share2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface PollOption {
   id: string;
@@ -24,6 +24,8 @@ const PollDetail: React.FC = () => {
   const [comment, setComment] = useState('');
   const [hasVoted, setHasVoted] = useState(false);
   const [showResults, setShowResults] = useState(true);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const [selectedOptionImages, setSelectedOptionImages] = useState<string[]>([]);
 
   // Моковые данные опроса
   const poll = {
@@ -36,7 +38,7 @@ const PollDetail: React.FC = () => {
     totalVotes: 12,
     totalParticipants: 8,
     status: 'active',
-    multipleChoice: false,
+    multipleChoice: true,
     anonymous: false,
     endDate: '2024-12-20',
     endTime: '18:00',
@@ -46,7 +48,10 @@ const PollDetail: React.FC = () => {
         id: '1',
         title: 'Новый кинотеатр в ТЦ Галерея',
         description: 'Современный кинотеатр с IMAX залами и удобными креслами. Показывают новинки кино.',
-        photos: ['https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg'],
+        photos: [
+          'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg',
+          'https://images.pexels.com/photos/7991580/pexels-photo-7991580.jpeg'
+        ],
         link: 'https://gallery-cinema.ru',
         price: '500₽ за билет',
         address: 'ТЦ Галерея, ул. Лиговский пр., 30А',
@@ -67,7 +72,10 @@ const PollDetail: React.FC = () => {
         id: '2',
         title: 'Уютное кафе "Чашка"',
         description: 'Атмосферное место с домашней выпечкой и настольными играми. Можно провести весь день.',
-        photos: ['https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg'],
+        photos: [
+          'https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg',
+          'https://images.pexels.com/photos/1307698/pexels-photo-1307698.jpeg'
+        ],
         link: 'https://cafe-chashka.ru',
         price: '300₽ на человека',
         address: 'ул. Рубинштейна, 15',
@@ -86,7 +94,9 @@ const PollDetail: React.FC = () => {
         id: '3',
         title: 'Прогулка по Летнему саду',
         description: 'Красивый исторический парк в центре города. Отличное место для фотосессии и неспешной прогулки.',
-        photos: ['https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg'],
+        photos: [
+          'https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg'
+        ],
         price: 'Бесплатно! 🎉',
         address: 'Летний сад, наб. Кутузова',
         pros: ['Бесплатно', 'Красивые виды', 'Свежий воздух', 'Много места для фото'],
@@ -121,6 +131,28 @@ const PollDetail: React.FC = () => {
     }
   };
 
+  const openImageModal = (images: string[], startIndex: number) => {
+    setSelectedOptionImages(images);
+    setSelectedImageIndex(startIndex);
+  };
+
+  const closeImageModal = () => {
+    setSelectedImageIndex(null);
+    setSelectedOptionImages([]);
+  };
+
+  const nextImage = () => {
+    if (selectedImageIndex !== null && selectedImageIndex < selectedOptionImages.length - 1) {
+      setSelectedImageIndex(selectedImageIndex + 1);
+    }
+  };
+
+  const prevImage = () => {
+    if (selectedImageIndex !== null && selectedImageIndex > 0) {
+      setSelectedImageIndex(selectedImageIndex - 1);
+    }
+  };
+
   const getTimeRemaining = () => {
     if (!poll.endDate || !poll.endTime) return null;
     
@@ -138,16 +170,16 @@ const PollDetail: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
+    <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-6 sm:space-y-8">
       {/* Заголовок опроса */}
-      <div className="bg-white rounded-2xl shadow-lg border border-purple-100 p-8">
-        <div className="flex items-start justify-between mb-6">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8">
+        <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-6">
           <div className="flex-1">
             <div className="flex items-center space-x-3 mb-4">
-              <span className="text-4xl">📍</span>
+              <span className="text-3xl sm:text-4xl">📍</span>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">{poll.title}</h1>
-                <div className="flex items-center space-x-4 text-gray-600 mt-2">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{poll.title}</h1>
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-gray-600 mt-2">
                   <span className="flex items-center">
                     <span className="text-xl mr-2">{poll.organizerAvatar}</span>
                     Создал: {poll.organizerName}
@@ -155,49 +187,54 @@ const PollDetail: React.FC = () => {
                   <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
                     Активный
                   </span>
+                  {poll.multipleChoice && (
+                    <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                      Можно выбрать несколько
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
             
-            <p className="text-gray-700 text-lg mb-6">{poll.description}</p>
+            <p className="text-gray-700 text-base sm:text-lg mb-6">{poll.description}</p>
             
             {/* Статистика */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="flex items-center text-gray-600 bg-purple-50 rounded-lg p-3">
-                <Vote className="w-5 h-5 mr-3 text-purple-500" />
+                <Vote className="w-4 sm:w-5 h-4 sm:h-5 mr-2 sm:mr-3 text-purple-500" />
                 <div>
-                  <p className="text-sm font-medium">Голосов</p>
-                  <p className="font-bold text-lg">{poll.totalVotes}</p>
+                  <p className="text-xs sm:text-sm font-medium">Голосов</p>
+                  <p className="font-bold text-base sm:text-lg">{poll.totalVotes}</p>
                 </div>
               </div>
               
               <div className="flex items-center text-gray-600 bg-pink-50 rounded-lg p-3">
-                <Users className="w-5 h-5 mr-3 text-pink-500" />
+                <Users className="w-4 sm:w-5 h-4 sm:h-5 mr-2 sm:mr-3 text-pink-500" />
                 <div>
-                  <p className="text-sm font-medium">Участников</p>
-                  <p className="font-bold text-lg">{poll.totalParticipants}</p>
+                  <p className="text-xs sm:text-sm font-medium">Участников</p>
+                  <p className="font-bold text-base sm:text-lg">{poll.totalParticipants}</p>
                 </div>
               </div>
               
               <div className="flex items-center text-gray-600 bg-orange-50 rounded-lg p-3">
-                <Clock className="w-5 h-5 mr-3 text-orange-500" />
+                <Clock className="w-4 sm:w-5 h-4 sm:h-5 mr-2 sm:mr-3 text-orange-500" />
                 <div>
-                  <p className="text-sm font-medium">До окончания</p>
-                  <p className="font-bold text-sm">{getTimeRemaining()}</p>
+                  <p className="text-xs sm:text-sm font-medium">До окончания</p>
+                  <p className="font-bold text-xs sm:text-sm">{getTimeRemaining()}</p>
                 </div>
               </div>
               
               <div className="flex items-center text-gray-600 bg-green-50 rounded-lg p-3">
-                <BarChart3 className="w-5 h-5 mr-3 text-green-500" />
+                <BarChart3 className="w-4 sm:w-5 h-4 sm:h-5 mr-2 sm:mr-3 text-green-500" />
                 <div>
-                  <p className="text-sm font-medium">Лидирует</p>
-                  <p className="font-bold text-sm">{poll.options[0].title.slice(0, 15)}...</p>
+                  <p className="text-xs sm:text-sm font-medium">Лидирует</p>
+                  <p className="font-bold text-xs sm:text-sm">{poll.options[0].title.slice(0, 15)}...</p>
                 </div>
               </div>
             </div>
           </div>
           
-          <div className="ml-6 space-y-3">
+          <div className="lg:ml-6 space-y-3">
             <button className="flex items-center gap-2 px-4 py-2 border-2 border-purple-200 text-purple-600 rounded-xl hover:bg-purple-50 hover:border-purple-400 transition-all duration-200 font-medium">
               <Share2 className="w-4 h-4" />
               Поделиться
@@ -217,9 +254,9 @@ const PollDetail: React.FC = () => {
       {/* Варианты для голосования */}
       <div className="space-y-6">
         {poll.options.map((option, index) => (
-          <div key={option.id} className="bg-white rounded-2xl shadow-lg border border-purple-100 overflow-hidden">
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-4">
+          <div key={option.id} className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+            <div className="p-4 sm:p-6">
+              <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-4">
                 <div className="flex items-start space-x-4 flex-1">
                   {!hasVoted && (
                     <div className="mt-2">
@@ -234,11 +271,11 @@ const PollDetail: React.FC = () => {
                   )}
                   
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{option.title}</h3>
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">{option.title}</h3>
                     <p className="text-gray-700 mb-4">{option.description}</p>
                     
                     {/* Детали варианта */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
                       {option.price && (
                         <div className="flex items-center text-gray-600 bg-green-50 rounded-lg p-3">
                           <DollarSign className="w-4 h-4 mr-2 text-green-500" />
@@ -300,12 +337,12 @@ const PollDetail: React.FC = () => {
                 
                 {/* Результаты голосования */}
                 {showResults && (
-                  <div className="ml-6 text-center min-w-[120px]">
-                    <div className="text-3xl font-bold text-purple-600 mb-1">{option.votes}</div>
+                  <div className="lg:ml-6 text-center lg:min-w-[120px]">
+                    <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-1">{option.votes}</div>
                     <div className="text-sm text-gray-600 mb-2">голосов</div>
-                    <div className="w-20 bg-gray-200 rounded-full h-2 mb-2">
+                    <div className="w-16 sm:w-20 bg-gray-200 rounded-full h-2 mb-2 mx-auto">
                       <div 
-                        className="bg-gradient-to-r from-purple-400 to-pink-400 h-2 rounded-full transition-all duration-500"
+                        className="bg-purple-500 h-2 rounded-full transition-all duration-500"
                         style={{ width: `${option.percentage}%` }}
                       ></div>
                     </div>
@@ -334,13 +371,14 @@ const PollDetail: React.FC = () => {
               
               {/* Фотографии */}
               {option.photos.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {option.photos.map((photo, photoIndex) => (
                     <img 
                       key={photoIndex}
                       src={photo} 
                       alt={`${option.title} - фото ${photoIndex + 1}`}
-                      className="w-full h-48 object-cover rounded-xl border border-gray-200"
+                      className="w-full h-48 object-cover rounded-xl border border-gray-200 cursor-pointer hover:opacity-90 transition-opacity"
+                      onClick={() => openImageModal(option.photos, photoIndex)}
                     />
                   ))}
                 </div>
@@ -352,8 +390,8 @@ const PollDetail: React.FC = () => {
 
       {/* Форма голосования */}
       {!hasVoted && poll.status === 'active' && (
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200">
-          <h3 className="text-xl font-bold text-purple-900 mb-4">🗳️ Твой голос</h3>
+        <div className="bg-purple-50 rounded-2xl p-4 sm:p-6 border border-purple-200">
+          <h3 className="text-lg sm:text-xl font-bold text-purple-900 mb-4">🗳️ Твой голос</h3>
           
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -368,7 +406,7 @@ const PollDetail: React.FC = () => {
             />
           </div>
           
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="text-sm text-purple-700">
               {selectedOptions.length === 0 
                 ? 'Выбери вариант для голосования' 
@@ -379,7 +417,7 @@ const PollDetail: React.FC = () => {
             <button
               onClick={handleVote}
               disabled={selectedOptions.length === 0}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 font-medium shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2"
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 sm:px-6 py-3 rounded-xl transition-all duration-200 font-medium shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center gap-2 justify-center"
             >
               <Vote className="w-5 h-5" />
               Проголосовать! 🚀
@@ -390,57 +428,58 @@ const PollDetail: React.FC = () => {
 
       {/* Сообщение о завершенном голосовании */}
       {hasVoted && (
-        <div className="bg-green-50 rounded-2xl p-6 border border-green-200 text-center">
+        <div className="bg-green-50 rounded-2xl p-4 sm:p-6 border border-green-200 text-center">
           <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-green-800 mb-2">Спасибо за участие! 🎉</h3>
+          <h3 className="text-lg sm:text-xl font-bold text-green-800 mb-2">Спасибо за участие! 🎉</h3>
           <p className="text-green-700">
             Твой голос учтен. Результаты обновятся автоматически.
           </p>
         </div>
       )}
 
-      {/* Комментарии */}
-      <div className="bg-white rounded-2xl shadow-lg border border-purple-100 p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-          <MessageCircle className="w-5 h-5 mr-2 text-purple-500" />
-          Обсуждение опроса
-        </h3>
-        
-        <div className="space-y-4">
-          {[
-            { author: 'Лена', avatar: '🌟', comment: 'Я за кино! Давно хотела посмотреть новый фильм в IMAX 🎬', time: '2 часа назад' },
-            { author: 'Макс', avatar: '🎮', comment: 'Кафе тоже неплохой вариант, особенно если погода плохая будет', time: '1 час назад' },
-            { author: 'Саша', avatar: '📸', comment: 'В Летнем саду сейчас красиво, можно классные фото сделать! 📸', time: '30 минут назад' }
-          ].map((comment, index) => (
-            <div key={index} className="flex items-start space-x-3 p-4 bg-gray-50 rounded-xl">
-              <span className="text-2xl">{comment.avatar}</span>
-              <div className="flex-1">
-                <div className="flex items-center space-x-2 mb-1">
-                  <span className="font-bold text-gray-900">{comment.author}</span>
-                  <span className="text-sm text-gray-500">{comment.time}</span>
-                </div>
-                <p className="text-gray-700">{comment.comment}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        <div className="mt-6 pt-4 border-t border-gray-200">
-          <div className="flex space-x-3">
-            <span className="text-2xl">👤</span>
-            <div className="flex-1">
-              <textarea
-                rows={2}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent resize-none"
-                placeholder="Добавь свой комментарий к опросу..."
-              />
-              <button className="mt-2 bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors">
-                Отправить
+      {/* Модальное окно для просмотра изображений */}
+      {selectedImageIndex !== null && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+          <div className="relative max-w-4xl max-h-full">
+            <button
+              onClick={closeImageModal}
+              className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
+            >
+              <X className="w-8 h-8" />
+            </button>
+            
+            {selectedOptionImages.length > 1 && selectedImageIndex > 0 && (
+              <button
+                onClick={prevImage}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10"
+              >
+                <ChevronLeft className="w-8 h-8" />
               </button>
-            </div>
+            )}
+            
+            {selectedOptionImages.length > 1 && selectedImageIndex < selectedOptionImages.length - 1 && (
+              <button
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10"
+              >
+                <ChevronRight className="w-8 h-8" />
+              </button>
+            )}
+            
+            <img
+              src={selectedOptionImages[selectedImageIndex]}
+              alt="Увеличенное изображение"
+              className="max-w-full max-h-full object-contain rounded-lg"
+            />
+            
+            {selectedOptionImages.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-sm">
+                {selectedImageIndex + 1} из {selectedOptionImages.length}
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

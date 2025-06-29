@@ -85,8 +85,8 @@ const CreateEvent: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6">
-      <div className="bg-white rounded-3xl shadow-2xl border border-purple-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-6 sm:p-8 text-white">
+      <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden">
+        <div className="bg-purple-600 p-6 sm:p-8 text-white">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
             <div className="p-3 bg-white bg-opacity-20 rounded-full">
               <Plus className="w-6 sm:w-8 h-6 sm:h-8" />
@@ -111,7 +111,7 @@ const CreateEvent: React.FC = () => {
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 sm:py-4 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 text-base sm:text-lg"
+                  className="w-full px-4 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 text-base sm:text-lg"
                   placeholder="Например: Поход в новое кафе или Киномарафон у Саши"
                   required
                 />
@@ -127,7 +127,7 @@ const CreateEvent: React.FC = () => {
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={4}
-                  className="w-full px-4 py-3 sm:py-4 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 resize-none text-base sm:text-lg"
+                  className="w-full px-4 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 resize-none text-base sm:text-lg"
                   placeholder="Что будем делать? Что взять с собой? Любые детали, которые помогут друзьям понять, что их ждет!"
                   required
                 />
@@ -142,7 +142,7 @@ const CreateEvent: React.FC = () => {
                   name="category"
                   value={formData.category}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 sm:py-4 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 text-base sm:text-lg"
+                  className="w-full px-4 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 text-base sm:text-lg"
                   required
                 >
                   <option value="hangout">🎉 Просто встреча</option>
@@ -170,7 +170,7 @@ const CreateEvent: React.FC = () => {
                     name="date"
                     value={formData.date}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 sm:py-4 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
                     required
                   />
                 </div>
@@ -186,7 +186,7 @@ const CreateEvent: React.FC = () => {
                     name="time"
                     value={formData.time}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 sm:py-4 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
                     required
                   />
                 </div>
@@ -203,7 +203,7 @@ const CreateEvent: React.FC = () => {
                   name="location"
                   value={formData.location}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 sm:py-4 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
                   placeholder="Адрес, название места или точка встречи"
                   required
                 />
@@ -220,7 +220,7 @@ const CreateEvent: React.FC = () => {
                   name="link"
                   value={formData.link}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 sm:py-4 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
                   placeholder="Ссылка на сайт, карту или соцсети места"
                 />
               </div>
@@ -239,7 +239,7 @@ const CreateEvent: React.FC = () => {
                 name="capacity"
                 value={formData.capacity}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 sm:py-4 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
                 placeholder="Максимальное количество участников"
                 min="2"
                 max="50"
@@ -258,7 +258,7 @@ const CreateEvent: React.FC = () => {
                 name="price"
                 value={formData.price}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 sm:py-4 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
                 placeholder="Например: 500₽ или Бесплатно! или 300₽ на еду"
                 required
               />
@@ -270,7 +270,7 @@ const CreateEvent: React.FC = () => {
               <Camera className="w-4 sm:w-5 h-4 sm:h-5 inline mr-2" />
               Добавь фото места (если есть)
             </label>
-            <div className="border-2 border-dashed border-purple-300 rounded-xl p-6 sm:p-8 text-center hover:border-purple-400 transition-colors">
+            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 sm:p-8 text-center hover:border-purple-400 transition-colors">
               <input
                 type="file"
                 id="photos"
@@ -281,7 +281,7 @@ const CreateEvent: React.FC = () => {
                 className="hidden"
               />
               <label htmlFor="photos" className="cursor-pointer">
-                <Camera className="w-8 sm:w-12 h-8 sm:h-12 text-purple-400 mx-auto mb-4" />
+                <Camera className="w-8 sm:w-12 h-8 sm:h-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-base sm:text-lg text-gray-600 mb-2">Нажми чтобы добавить фото</p>
                 <p className="text-sm text-gray-500">Покажи друзьям как выглядит место!</p>
               </label>
@@ -312,7 +312,7 @@ const CreateEvent: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 sm:py-4 px-6 sm:px-8 rounded-xl font-bold text-base sm:text-lg hover:from-purple-600 hover:to-pink-600 focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 transition-all duration-200 shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 sm:py-4 px-6 sm:px-8 rounded-xl font-bold text-base sm:text-lg focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 transition-all duration-200 shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {loading ? (
                 <div className="flex items-center justify-center">

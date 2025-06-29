@@ -17,6 +17,7 @@ interface Poll {
   createdAt: string;
   isVoted: boolean;
   topOption: string;
+  multipleChoice: boolean;
 }
 
 const PollsList: React.FC = () => {
@@ -38,7 +39,8 @@ const PollsList: React.FC = () => {
       endTime: '18:00',
       createdAt: '2024-12-15',
       isVoted: true,
-      topOption: 'Новый кинотеатр в ТЦ Галерея'
+      topOption: 'Новый кинотеатр в ТЦ Галерея',
+      multipleChoice: false
     },
     {
       id: '2',
@@ -54,7 +56,8 @@ const PollsList: React.FC = () => {
       endTime: '20:00',
       createdAt: '2024-12-14',
       isVoted: false,
-      topOption: 'Суббота 19:00'
+      topOption: 'Суббота 19:00',
+      multipleChoice: true
     },
     {
       id: '3',
@@ -70,7 +73,8 @@ const PollsList: React.FC = () => {
       endTime: '23:59',
       createdAt: '2024-12-05',
       isVoted: true,
-      topOption: 'Ресторан "Панорама"'
+      topOption: 'Ресторан "Панорама"',
+      multipleChoice: true
     },
     {
       id: '4',
@@ -86,7 +90,8 @@ const PollsList: React.FC = () => {
       endTime: '12:00',
       createdAt: '2024-12-13',
       isVoted: false,
-      topOption: 'Каток в Сокольниках'
+      topOption: 'Каток в Сокольниках',
+      multipleChoice: true
     }
   ];
 
@@ -117,10 +122,10 @@ const PollsList: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'from-green-400 to-green-600';
-      case 'closed': return 'from-gray-400 to-gray-600';
-      case 'draft': return 'from-orange-400 to-orange-600';
-      default: return 'from-purple-400 to-purple-600';
+      case 'active': return 'bg-green-500 text-white';
+      case 'closed': return 'bg-gray-500 text-white';
+      case 'draft': return 'bg-orange-500 text-white';
+      default: return 'bg-purple-500 text-white';
     }
   };
 
@@ -142,20 +147,20 @@ const PollsList: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-8">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+    <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
+      <div className="text-center mb-6 sm:mb-8">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
           Опросы группы 📊
         </h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+        <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
           Голосуем за места, время и активности перед созданием мероприятий!
         </p>
       </div>
 
       {/* Статистика и фильтры */}
-      <div className="bg-white rounded-2xl shadow-lg border border-purple-100 p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="text-center">
               <p className="text-2xl font-bold text-purple-600">{polls.filter(p => p.status === 'active').length}</p>
               <p className="text-gray-600">Активных опросов</p>
@@ -172,7 +177,7 @@ const PollsList: React.FC = () => {
 
           <Link 
             to="/create-poll"
-            className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 font-medium shadow-lg transform hover:scale-105 flex items-center gap-2"
+            className="bg-purple-600 hover:bg-purple-700 text-white px-4 sm:px-6 py-3 rounded-xl transition-all duration-200 font-medium shadow-lg transform hover:scale-105 flex items-center gap-2 justify-center"
           >
             <Plus className="w-5 h-5" />
             Создать опрос
@@ -180,7 +185,7 @@ const PollsList: React.FC = () => {
         </div>
 
         {/* Фильтры */}
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {[
             { key: 'all', label: 'Все опросы', count: polls.length },
             { key: 'active', label: 'Активные', count: polls.filter(p => p.status === 'active').length },
@@ -191,7 +196,7 @@ const PollsList: React.FC = () => {
               onClick={() => setFilter(filterOption.key as any)}
               className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
                 filter === filterOption.key
-                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
+                  ? 'bg-purple-600 text-white shadow-lg'
                   : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
               }`}
             >
@@ -204,54 +209,59 @@ const PollsList: React.FC = () => {
       {/* Список опросов */}
       <div className="grid gap-6">
         {filteredPolls.map((poll) => (
-          <div key={poll.id} className="bg-white rounded-2xl shadow-lg border border-purple-100 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]">
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-4">
+          <div key={poll.id} className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]">
+            <div className="p-4 sm:p-6">
+              <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-3">
-                    <span className="text-3xl">{getCategoryEmoji(poll.category)}</span>
+                    <span className="text-2xl sm:text-3xl">{getCategoryEmoji(poll.category)}</span>
                     <div>
-                      <h3 className="text-2xl font-bold text-gray-900">{poll.title}</h3>
-                      <div className="flex items-center space-x-4 text-sm text-gray-600">
+                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900">{poll.title}</h3>
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-gray-600">
                         <span className="flex items-center">
                           <span className="text-lg mr-1">{poll.organizerAvatar}</span>
                           {poll.organizerName}
                         </span>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${getStatusColor(poll.status)} text-white`}>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(poll.status)}`}>
                           {getStatusText(poll.status)}
                         </span>
                         <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
                           {getCategoryName(poll.category)}
                         </span>
+                        {poll.multipleChoice && (
+                          <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                            Множественный выбор
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
                   
-                  <p className="text-gray-700 text-lg mb-4">{poll.description}</p>
+                  <p className="text-gray-700 text-base sm:text-lg mb-4">{poll.description}</p>
                   
                   {/* Статистика опроса */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4">
                     <div className="flex items-center text-gray-600 bg-purple-50 rounded-lg p-3">
-                      <Vote className="w-5 h-5 mr-3 text-purple-500" />
+                      <Vote className="w-4 sm:w-5 h-4 sm:h-5 mr-2 sm:mr-3 text-purple-500" />
                       <div>
-                        <p className="text-sm font-medium">Голосов</p>
-                        <p className="font-bold text-lg">{poll.totalVotes}</p>
+                        <p className="text-xs sm:text-sm font-medium">Голосов</p>
+                        <p className="font-bold text-base sm:text-lg">{poll.totalVotes}</p>
                       </div>
                     </div>
                     
                     <div className="flex items-center text-gray-600 bg-pink-50 rounded-lg p-3">
-                      <Users className="w-5 h-5 mr-3 text-pink-500" />
+                      <Users className="w-4 sm:w-5 h-4 sm:h-5 mr-2 sm:mr-3 text-pink-500" />
                       <div>
-                        <p className="text-sm font-medium">Участников</p>
-                        <p className="font-bold text-lg">{poll.totalParticipants}</p>
+                        <p className="text-xs sm:text-sm font-medium">Участников</p>
+                        <p className="font-bold text-base sm:text-lg">{poll.totalParticipants}</p>
                       </div>
                     </div>
                     
                     <div className="flex items-center text-gray-600 bg-orange-50 rounded-lg p-3">
-                      <Clock className="w-5 h-5 mr-3 text-orange-500" />
+                      <Clock className="w-4 sm:w-5 h-4 sm:h-5 mr-2 sm:mr-3 text-orange-500" />
                       <div>
-                        <p className="text-sm font-medium">До окончания</p>
-                        <p className="font-bold text-sm">
+                        <p className="text-xs sm:text-sm font-medium">До окончания</p>
+                        <p className="font-bold text-xs sm:text-sm">
                           {poll.status === 'active' && poll.endDate 
                             ? `${poll.endDate} ${poll.endTime}`
                             : poll.status === 'closed' ? 'Завершен' : 'Без ограничений'
@@ -263,7 +273,7 @@ const PollsList: React.FC = () => {
 
                   {/* Лидирующий вариант */}
                   {poll.topOption && (
-                    <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-4 border border-green-200 mb-4">
+                    <div className="bg-green-50 rounded-xl p-4 border border-green-200 mb-4">
                       <div className="flex items-center">
                         <BarChart3 className="w-5 h-5 text-green-600 mr-2" />
                         <span className="font-medium text-green-800">Лидирует:</span>
@@ -283,7 +293,7 @@ const PollsList: React.FC = () => {
                   )}
                 </div>
                 
-                <div className="ml-6 space-y-3">
+                <div className="lg:ml-6 space-y-3 lg:min-w-[200px]">
                   {poll.isVoted && (
                     <div className="bg-green-50 border border-green-200 rounded-xl p-3 text-center">
                       <CheckCircle className="w-6 h-6 text-green-500 mx-auto mb-1" />
@@ -294,7 +304,7 @@ const PollsList: React.FC = () => {
                   <div className="space-y-2">
                     <Link 
                       to={`/polls/${poll.id}`}
-                      className="block w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-3 rounded-xl text-sm hover:from-purple-600 hover:to-pink-600 transition-all duration-200 font-medium shadow-md transform hover:scale-105 text-center"
+                      className="block w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-xl text-sm transition-all duration-200 font-medium shadow-md transform hover:scale-105 text-center"
                     >
                       {poll.isVoted ? (
                         <>
@@ -308,11 +318,6 @@ const PollsList: React.FC = () => {
                         </>
                       )}
                     </Link>
-                    
-                    <button className="block w-full border-2 border-purple-200 text-purple-600 px-4 py-3 rounded-xl text-sm hover:bg-purple-50 hover:border-purple-400 transition-all duration-200 font-medium flex items-center justify-center">
-                      <MessageCircle className="w-4 h-4 mr-2" />
-                      Обсудить
-                    </button>
                   </div>
                 </div>
               </div>
@@ -325,7 +330,7 @@ const PollsList: React.FC = () => {
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                   <div 
-                    className="bg-gradient-to-r from-purple-400 to-pink-400 h-2 rounded-full transition-all duration-500"
+                    className="bg-purple-500 h-2 rounded-full transition-all duration-500"
                     style={{ width: `${Math.min((poll.totalVotes / (poll.totalParticipants * 1.5)) * 100, 100)}%` }}
                   ></div>
                 </div>
@@ -336,12 +341,12 @@ const PollsList: React.FC = () => {
       </div>
 
       {filteredPolls.length === 0 && (
-        <div className="bg-white rounded-2xl shadow-lg border border-purple-100 p-12 text-center">
-          <div className="text-6xl mb-6">🗳️</div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 sm:p-12 text-center">
+          <div className="text-4xl sm:text-6xl mb-6">🗳️</div>
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
             {filter === 'all' ? 'Пока нет опросов' : `Нет ${filter === 'active' ? 'активных' : 'завершенных'} опросов`}
           </h3>
-          <p className="text-gray-600 text-lg mb-6">
+          <p className="text-gray-600 text-base sm:text-lg mb-6">
             {filter === 'all' 
               ? 'Создай первый опрос чтобы узнать мнение группы!' 
               : 'Попробуй изменить фильтр или создай новый опрос'
@@ -349,7 +354,7 @@ const PollsList: React.FC = () => {
           </p>
           <Link 
             to="/create-poll"
-            className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 font-medium shadow-lg transform hover:scale-105 inline-flex items-center gap-2"
+            className="bg-purple-600 hover:bg-purple-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl transition-all duration-200 font-medium shadow-lg transform hover:scale-105 inline-flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
             Создать первый опрос!
@@ -358,10 +363,10 @@ const PollsList: React.FC = () => {
       )}
 
       {/* Мотивационная секция */}
-      <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-lg p-8 text-white text-center">
-        <div className="text-6xl mb-4">🗳️</div>
-        <h3 className="text-2xl font-bold mb-4">Вместе решаем лучше!</h3>
-        <p className="text-purple-100 text-lg mb-6">
+      <div className="bg-purple-600 rounded-2xl shadow-lg p-6 sm:p-8 text-white text-center">
+        <div className="text-4xl sm:text-6xl mb-4">🗳️</div>
+        <h3 className="text-xl sm:text-2xl font-bold mb-4">Вместе решаем лучше!</h3>
+        <p className="text-purple-100 text-base sm:text-lg mb-6">
           Опросы помогают нам учесть мнение каждого и выбрать то, что понравится всем. 
           Демократия в действии! 🎯
         </p>

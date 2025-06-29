@@ -19,7 +19,7 @@ const CreatePoll: React.FC = () => {
     title: '',
     description: '',
     category: 'place' as 'place' | 'activity' | 'time' | 'other',
-    multipleChoice: false,
+    multipleChoice: true,
     anonymous: false,
     showResults: true,
     hasEndDate: false,
@@ -137,16 +137,16 @@ const CreatePoll: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="bg-white rounded-3xl shadow-2xl border border-purple-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-8 text-white">
-          <div className="flex items-center gap-4 mb-4">
+    <div className="max-w-6xl mx-auto p-4 sm:p-6">
+      <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden">
+        <div className="bg-purple-600 p-6 sm:p-8 text-white">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
             <div className="p-3 bg-white bg-opacity-20 rounded-full">
-              <span className="text-3xl">🗳️</span>
+              <span className="text-2xl sm:text-3xl">🗳️</span>
             </div>
             <div>
-              <h2 className="text-3xl font-bold">Создать опрос! 📊</h2>
-              <p className="text-purple-100 text-lg">Узнай мнение группы перед планированием мероприятия</p>
+              <h2 className="text-2xl sm:text-3xl font-bold">Создать опрос! 📊</h2>
+              <p className="text-purple-100 text-base sm:text-lg">Узнай мнение группы перед планированием мероприятия</p>
             </div>
           </div>
           
@@ -160,7 +160,7 @@ const CreatePoll: React.FC = () => {
                   {step}
                 </div>
                 {step < 3 && (
-                  <div className={`w-12 h-1 mx-2 ${
+                  <div className={`w-8 sm:w-12 h-1 mx-2 ${
                     currentStep > step ? 'bg-white' : 'bg-white bg-opacity-30'
                   }`}></div>
                 )}
@@ -174,43 +174,43 @@ const CreatePoll: React.FC = () => {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-8">
+        <form onSubmit={handleSubmit} className="p-6 sm:p-8">
           {/* Шаг 1: Основная информация */}
           {currentStep === 1 && (
             <div className="space-y-6">
               <div>
-                <label className="block text-lg font-bold text-gray-700 mb-3">
+                <label className="block text-base sm:text-lg font-bold text-gray-700 mb-3">
                   🎯 О чем будем голосовать?
                 </label>
                 <input
                   type="text"
                   value={pollData.title}
                   onChange={(e) => handlePollDataChange('title', e.target.value)}
-                  className="w-full px-4 py-4 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 text-lg"
+                  className="w-full px-4 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 text-base sm:text-lg"
                   placeholder="Например: Куда пойдем на выходных? или Выбираем время для встречи"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-lg font-bold text-gray-700 mb-3">
+                <label className="block text-base sm:text-lg font-bold text-gray-700 mb-3">
                   📝 Подробное описание
                 </label>
                 <textarea
                   value={pollData.description}
                   onChange={(e) => handlePollDataChange('description', e.target.value)}
                   rows={4}
-                  className="w-full px-4 py-4 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 resize-none text-lg"
+                  className="w-full px-4 py-3 sm:py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 resize-none text-base sm:text-lg"
                   placeholder="Расскажи подробнее о том, что выбираем и почему это важно..."
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-lg font-bold text-gray-700 mb-3">
+                <label className="block text-base sm:text-lg font-bold text-gray-700 mb-3">
                   🏷️ Тип опроса
                 </label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {[
                     { key: 'place', label: 'Место', emoji: '📍', desc: 'Кафе, парки, кинотеатры' },
                     { key: 'activity', label: 'Активность', emoji: '🎯', desc: 'Что будем делать' },
@@ -239,18 +239,18 @@ const CreatePoll: React.FC = () => {
 
           {/* Шаг 2: Варианты */}
           {currentStep === 2 && (
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               <div className="text-center">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                   {getCategoryEmoji(pollData.category)} Добавь варианты для голосования
                 </h3>
                 <p className="text-gray-600">Чем подробнее опишешь каждый вариант, тем легче будет выбрать!</p>
               </div>
 
               {options.map((option, index) => (
-                <div key={option.id} className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200">
+                <div key={option.id} className="bg-gray-50 rounded-2xl p-4 sm:p-6 border border-gray-200">
                   <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-xl font-bold text-purple-900">
+                    <h4 className="text-lg sm:text-xl font-bold text-gray-900">
                       Вариант {index + 1}
                     </h4>
                     {options.length > 1 && (
@@ -274,7 +274,7 @@ const CreatePoll: React.FC = () => {
                           type="text"
                           value={option.title}
                           onChange={(e) => handleOptionChange(option.id, 'title', e.target.value)}
-                          className="w-full px-4 py-3 border border-purple-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
                           placeholder="Например: Кинотеатр Галерея или Суббота 19:00"
                           required
                         />
@@ -288,7 +288,7 @@ const CreatePoll: React.FC = () => {
                           value={option.description}
                           onChange={(e) => handleOptionChange(option.id, 'description', e.target.value)}
                           rows={3}
-                          className="w-full px-4 py-3 border border-purple-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent resize-none"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent resize-none"
                           placeholder="Подробности о варианте..."
                         />
                       </div>
@@ -304,7 +304,7 @@ const CreatePoll: React.FC = () => {
                               type="text"
                               value={option.address}
                               onChange={(e) => handleOptionChange(option.id, 'address', e.target.value)}
-                              className="w-full px-4 py-3 border border-purple-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
                               placeholder="Адрес места"
                             />
                           </div>
@@ -318,7 +318,7 @@ const CreatePoll: React.FC = () => {
                               type="text"
                               value={option.price}
                               onChange={(e) => handleOptionChange(option.id, 'price', e.target.value)}
-                              className="w-full px-4 py-3 border border-purple-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+                              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
                               placeholder="500₽ или Бесплатно"
                             />
                           </div>
@@ -334,7 +334,7 @@ const CreatePoll: React.FC = () => {
                           type="url"
                           value={option.link}
                           onChange={(e) => handleOptionChange(option.id, 'link', e.target.value)}
-                          className="w-full px-4 py-3 border border-purple-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
                           placeholder="https://..."
                         />
                       </div>
@@ -347,7 +347,7 @@ const CreatePoll: React.FC = () => {
                           <Camera className="w-4 h-4 inline mr-1" />
                           Фотографии
                         </label>
-                        <div className="border-2 border-dashed border-purple-300 rounded-xl p-4 text-center hover:border-purple-400 transition-colors">
+                        <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center hover:border-purple-400 transition-colors">
                           <input
                             type="file"
                             multiple
@@ -357,8 +357,8 @@ const CreatePoll: React.FC = () => {
                             id={`photos-${option.id}`}
                           />
                           <label htmlFor={`photos-${option.id}`} className="cursor-pointer">
-                            <Camera className="w-8 h-8 text-purple-400 mx-auto mb-2" />
-                            <p className="text-purple-600 font-medium">Добавить фото</p>
+                            <Camera className="w-6 sm:w-8 h-6 sm:h-8 text-gray-400 mx-auto mb-2" />
+                            <p className="text-gray-600 font-medium">Добавить фото</p>
                             <p className="text-sm text-gray-500">Покажи как выглядит место или активность</p>
                           </label>
                           {option.photos.length > 0 && (
@@ -448,7 +448,7 @@ const CreatePoll: React.FC = () => {
                       value={option.additionalInfo}
                       onChange={(e) => handleOptionChange(option.id, 'additionalInfo', e.target.value)}
                       rows={2}
-                      className="w-full px-4 py-3 border border-purple-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent resize-none"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent resize-none"
                       placeholder="Любая другая полезная информация..."
                     />
                   </div>
@@ -459,7 +459,7 @@ const CreatePoll: React.FC = () => {
                 <button
                   type="button"
                   onClick={addOption}
-                  className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-6 py-3 rounded-xl hover:from-green-600 hover:to-blue-600 transition-all duration-200 font-medium shadow-lg transform hover:scale-105 flex items-center gap-2 mx-auto"
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-3 rounded-xl transition-all duration-200 font-medium shadow-lg transform hover:scale-105 flex items-center gap-2 mx-auto"
                 >
                   <Plus className="w-5 h-5" />
                   Добавить еще вариант
@@ -471,8 +471,8 @@ const CreatePoll: React.FC = () => {
           {/* Шаг 3: Настройки */}
           {currentStep === 3 && (
             <div className="space-y-6">
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">⚙️ Настройки опроса</h3>
+              <div className="text-center mb-6 sm:mb-8">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">⚙️ Настройки опроса</h3>
                 <p className="text-gray-600">Последние штрихи перед публикацией</p>
               </div>
 
@@ -533,7 +533,7 @@ const CreatePoll: React.FC = () => {
                   </label>
 
                   {pollData.hasEndDate && (
-                    <div className="grid grid-cols-2 gap-4 ml-12">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-4 sm:ml-12">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Дата окончания
@@ -542,7 +542,7 @@ const CreatePoll: React.FC = () => {
                           type="date"
                           value={pollData.endDate}
                           onChange={(e) => handlePollDataChange('endDate', e.target.value)}
-                          className="w-full px-4 py-3 border border-purple-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
                         />
                       </div>
                       <div>
@@ -553,7 +553,7 @@ const CreatePoll: React.FC = () => {
                           type="time"
                           value={pollData.endTime}
                           onChange={(e) => handlePollDataChange('endTime', e.target.value)}
-                          className="w-full px-4 py-3 border border-purple-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
                         />
                       </div>
                     </div>
@@ -562,12 +562,17 @@ const CreatePoll: React.FC = () => {
               </div>
 
               {/* Предпросмотр */}
-              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200">
-                <h4 className="text-lg font-bold text-purple-900 mb-4">📋 Предпросмотр опроса</h4>
+              <div className="bg-purple-50 rounded-2xl p-4 sm:p-6 border border-purple-200">
+                <h4 className="text-base sm:text-lg font-bold text-purple-900 mb-4">📋 Предпросмотр опроса</h4>
                 <div className="bg-white rounded-xl p-4 border border-purple-200">
                   <div className="flex items-center space-x-3 mb-3">
                     <span className="text-2xl">{getCategoryEmoji(pollData.category)}</span>
-                    <h5 className="text-xl font-bold text-gray-900">{pollData.title || 'Название опроса'}</h5>
+                    <h5 className="text-lg sm:text-xl font-bold text-gray-900">{pollData.title || 'Название опроса'}</h5>
+                    {pollData.multipleChoice && (
+                      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                        Множественный выбор
+                      </span>
+                    )}
                   </div>
                   <p className="text-gray-700 mb-4">{pollData.description || 'Описание опроса'}</p>
                   <div className="space-y-2">
@@ -595,12 +600,12 @@ const CreatePoll: React.FC = () => {
           )}
 
           {/* Навигация */}
-          <div className="flex justify-between pt-8 border-t border-gray-200">
+          <div className="flex flex-col sm:flex-row justify-between gap-4 pt-6 sm:pt-8 border-t border-gray-200">
             <button
               type="button"
               onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
               disabled={currentStep === 1}
-              className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 sm:px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed order-2 sm:order-1"
             >
               ← Назад
             </button>
@@ -609,14 +614,14 @@ const CreatePoll: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setCurrentStep(currentStep + 1)}
-                className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg transform hover:scale-105"
+                className="px-4 sm:px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg transform hover:scale-105 order-1 sm:order-2"
               >
                 Далее →
               </button>
             ) : (
               <button
                 type="submit"
-                className="px-8 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-xl font-medium hover:from-green-600 hover:to-blue-600 transition-all duration-200 shadow-lg transform hover:scale-105 flex items-center gap-2"
+                className="px-6 sm:px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg transform hover:scale-105 flex items-center gap-2 justify-center order-1 sm:order-2"
               >
                 <Save className="w-5 h-5" />
                 Опубликовать опрос! 🚀
