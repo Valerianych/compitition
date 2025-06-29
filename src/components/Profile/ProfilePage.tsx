@@ -15,12 +15,15 @@ const ProfilePage: React.FC = () => {
     phone: employee?.phone || '',
     bio: employee?.bio || '',
     avatar: employee?.avatar || '👤',
-    location: 'Москва', // Можно добавить в типы позже
+    location: 'Челябинск',
     joinDate: employee?.createdAt?.toDate().toLocaleDateString('ru-RU') || '',
-    favoriteActivities: ['Кино', 'Кафе', 'Прогулки'], // Можно добавить в типы позже
+    favoriteActivities: ['Кино', 'Кафе', 'Прогулки'],
     totalMeetings: 24,
     organizerRating: 4.8
   });
+
+  const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -30,18 +33,45 @@ const ProfilePage: React.FC = () => {
     }));
   };
 
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedPhoto(file);
+      
+      // Создаем превью
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPhotoPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSave = async () => {
     if (!employee?.id) return;
     
     setLoading(true);
     try {
+      // В реальном приложении здесь будет загрузка фото в Firebase Storage
+      let photoUrl = profileData.avatar;
+      
+      if (selectedPhoto) {
+        // TODO: Загрузить фото в Firebase Storage и получить URL
+        console.log('Загружаем фото:', selectedPhoto);
+        // photoUrl = await uploadPhotoToStorage(selectedPhoto);
+      }
+
       await updateEmployee(employee.id, {
         name: profileData.name,
         nickname: profileData.nickname,
         phone: profileData.phone,
-        bio: profileData.bio
+        bio: profileData.bio,
+        avatar: photoUrl
       });
+      
       setIsEditing(false);
+      setSelectedPhoto(null);
+      setPhotoPreview(null);
     } catch (error) {
       console.error('Ошибка обновления профиля:', error);
     } finally {
@@ -57,34 +87,54 @@ const ProfilePage: React.FC = () => {
       phone: employee?.phone || '',
       bio: employee?.bio || '',
       avatar: employee?.avatar || '👤',
-      location: 'Москва',
+      location: 'Челябинск',
       joinDate: employee?.createdAt?.toDate().toLocaleDateString('ru-RU') || '',
       favoriteActivities: ['Кино', 'Кафе', 'Прогулки'],
       totalMeetings: 24,
       organizerRating: 4.8
     });
     setIsEditing(false);
+    setSelectedPhoto(null);
+    setPhotoPreview(null);
   };
 
   const avatarOptions = ['👤', '🦸‍♂️', '🌟', '🎮', '📸', '☕', '🎭', '🎨', '🎵', '📚', '🏃‍♂️', '🧑‍💻', '👨‍🍳', '🧑‍🎓'];
 
+  const cities = [
+    'Челябинск',
+    'Москва', 
+    'Санкт-Петербург',
+    'Екатеринбург',
+    'Новосибирск',
+    'Казань',
+    'Нижний Новгород',
+    'Красноярск',
+    'Самара',
+    'Уфа',
+    'Ростов-на-Дону',
+    'Краснодар',
+    'Омск',
+    'Воронеж',
+    'Пермь'
+  ];
+
   return (
-    <div className="p-6 space-y-8">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+    <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
+      <div className="text-center mb-6 sm:mb-8">
+        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
           Мой профиль 👤
         </h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+        <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
           Расскажи о себе больше, чтобы друзья знали с кем планируют встречи!
         </p>
       </div>
 
       {/* Табы */}
-      <div className="bg-white rounded-2xl shadow-lg border border-purple-100 p-2 mb-8">
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-2 mb-6 sm:mb-8">
         <div className="flex gap-2">
           <button
             onClick={() => setActiveTab('profile')}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-medium transition-all duration-200 ${
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 sm:px-6 rounded-xl font-medium transition-all duration-200 ${
               activeTab === 'profile'
                 ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
                 : 'text-gray-600 hover:bg-purple-50'
@@ -95,7 +145,7 @@ const ProfilePage: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('notifications')}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-medium transition-all duration-200 ${
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 sm:px-6 rounded-xl font-medium transition-all duration-200 ${
               activeTab === 'notifications'
                 ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
                 : 'text-gray-600 hover:bg-purple-50'
@@ -108,13 +158,13 @@ const ProfilePage: React.FC = () => {
       </div>
 
       {activeTab === 'profile' ? (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Основная информация */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-lg border border-purple-100 p-8">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-gray-900 flex items-center">
-                  <User className="w-6 h-6 mr-3 text-purple-500" />
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center">
+                  <User className="w-5 sm:w-6 h-5 sm:h-6 mr-3 text-purple-500" />
                   Основная информация
                 </h3>
                 {!isEditing ? (
@@ -147,29 +197,47 @@ const ProfilePage: React.FC = () => {
               </div>
 
               <div className="space-y-6">
-                {/* Аватар */}
-                <div className="flex items-center space-x-6">
+                {/* Аватар и фото */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
                   <div className="relative">
-                    <div className="w-24 h-24 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-4xl shadow-lg">
-                      {profileData.avatar}
-                    </div>
+                    {photoPreview ? (
+                      <img 
+                        src={photoPreview} 
+                        alt="Превью фото"
+                        className="w-20 sm:w-24 h-20 sm:h-24 rounded-full object-cover shadow-lg border-4 border-white"
+                      />
+                    ) : (
+                      <div className="w-20 sm:w-24 h-20 sm:h-24 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-3xl sm:text-4xl shadow-lg">
+                        {profileData.avatar}
+                      </div>
+                    )}
                     {isEditing && (
-                      <button className="absolute -bottom-2 -right-2 bg-white rounded-full p-2 shadow-lg border-2 border-purple-200 hover:border-purple-400 transition-colors">
+                      <label className="absolute -bottom-2 -right-2 bg-white rounded-full p-2 shadow-lg border-2 border-purple-200 hover:border-purple-400 transition-colors cursor-pointer">
                         <Camera className="w-4 h-4 text-purple-600" />
-                      </button>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handlePhotoUpload}
+                          className="hidden"
+                        />
+                      </label>
                     )}
                   </div>
                   
                   {isEditing && (
-                    <div>
-                      <p className="text-sm font-medium text-gray-700 mb-2">Выбери аватар:</p>
-                      <div className="grid grid-cols-7 gap-2">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-700 mb-3">Выбери аватар или загрузи фото:</p>
+                      <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 mb-3">
                         {avatarOptions.map(avatar => (
                           <button
                             key={avatar}
-                            onClick={() => setProfileData(prev => ({ ...prev, avatar }))}
+                            onClick={() => {
+                              setProfileData(prev => ({ ...prev, avatar }));
+                              setPhotoPreview(null);
+                              setSelectedPhoto(null);
+                            }}
                             className={`w-10 h-10 rounded-lg border-2 flex items-center justify-center text-lg hover:scale-110 transition-all duration-200 ${
-                              profileData.avatar === avatar 
+                              profileData.avatar === avatar && !photoPreview
                                 ? 'border-purple-500 bg-purple-50' 
                                 : 'border-gray-200 hover:border-purple-300'
                             }`}
@@ -178,6 +246,9 @@ const ProfilePage: React.FC = () => {
                           </button>
                         ))}
                       </div>
+                      <p className="text-xs text-gray-500">
+                        💡 Можешь выбрать эмодзи-аватар или загрузить свою фотографию
+                      </p>
                     </div>
                   )}
                 </div>
@@ -194,7 +265,7 @@ const ProfilePage: React.FC = () => {
                         name="name"
                         value={profileData.name}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
                         placeholder="Как тебя зовут?"
                       />
                     ) : (
@@ -214,7 +285,7 @@ const ProfilePage: React.FC = () => {
                         name="nickname"
                         value={profileData.nickname}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
                         placeholder="Как тебя называют друзья?"
                       />
                     ) : (
@@ -245,13 +316,36 @@ const ProfilePage: React.FC = () => {
                         name="phone"
                         value={profileData.phone}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
                         placeholder="+7 (999) 123-45-67"
                       />
                     ) : (
                       <div className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center">
                         <Phone className="w-5 h-5 text-gray-400 mr-2" />
                         {profileData.phone || 'Не указано'}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Город
+                    </label>
+                    {isEditing ? (
+                      <select
+                        name="location"
+                        value={profileData.location}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200"
+                      >
+                        {cities.map(city => (
+                          <option key={city} value={city}>{city}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <div className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center">
+                        <MapPin className="w-5 h-5 text-gray-400 mr-2" />
+                        {profileData.location}
                       </div>
                     )}
                   </div>
@@ -267,7 +361,7 @@ const ProfilePage: React.FC = () => {
                       value={profileData.bio}
                       onChange={handleInputChange}
                       rows={4}
-                      className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 resize-none"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 resize-none"
                       placeholder="Расскажи немного о себе, своих интересах и хобби..."
                     />
                   ) : (
@@ -283,8 +377,8 @@ const ProfilePage: React.FC = () => {
           {/* Боковая панель со статистикой */}
           <div className="space-y-6">
             {/* Статистика */}
-            <div className="bg-white rounded-2xl shadow-lg border border-purple-100 p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 flex items-center">
                 <Heart className="w-5 h-5 mr-2 text-pink-500" />
                 Моя активность
               </h3>
@@ -325,8 +419,8 @@ const ProfilePage: React.FC = () => {
             </div>
 
             {/* Любимые активности */}
-            <div className="bg-white rounded-2xl shadow-lg border border-purple-100 p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">
                 🎯 Любимые активности
               </h3>
               
@@ -345,8 +439,8 @@ const ProfilePage: React.FC = () => {
             </div>
 
             {/* Достижения */}
-            <div className="bg-white rounded-2xl shadow-lg border border-purple-100 p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">
                 🏆 Достижения
               </h3>
               
@@ -384,8 +478,8 @@ const ProfilePage: React.FC = () => {
 
       {/* Последние активности - только для вкладки профиля */}
       {activeTab === 'profile' && (
-        <div className="bg-white rounded-2xl shadow-lg border border-purple-100 p-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8">
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">
             📝 Последние активности
           </h3>
           
@@ -396,12 +490,12 @@ const ProfilePage: React.FC = () => {
               { action: 'Организовал встречу "Кафе у метро"', time: '1 неделю назад', icon: '☕' },
               { action: 'Присоединился к группе', time: '2 недели назад', icon: '🎉' }
             ].map((activity, index) => (
-              <div key={index} className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100">
+              <div key={index} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100 gap-2">
                 <div className="flex items-center">
                   <span className="text-2xl mr-4">{activity.icon}</span>
                   <span className="font-medium text-gray-900">{activity.action}</span>
                 </div>
-                <span className="text-sm text-gray-500">{activity.time}</span>
+                <span className="text-sm text-gray-500 sm:text-right">{activity.time}</span>
               </div>
             ))}
           </div>
